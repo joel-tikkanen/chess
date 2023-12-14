@@ -1,5 +1,7 @@
 package chess;
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -306,7 +308,6 @@ public class Board {
                 break;
             case PP:
                 // en passant variables
-                System.out.println(test);
                 if (!test) setEP(move);
                 break;
             case PRB:
@@ -379,9 +380,6 @@ public class Board {
             m.getPiece().setColor(m.getPiece().getColor());
             m.getPiece().setAttributes();
         }
-        
-        // pop fen 
-        // dec mcount
         m.getPiece().decCount();
         changeTurn();
         resetEP();
@@ -393,29 +391,34 @@ public class Board {
         resetEP();
         setOld();
         Piece moving = move.getPiece();
-
-
-        // Updating the board
         handleFlag(move, false);
         playedMoves.push(move);
-
-
-
-        // inc mcount
         moving.incCount();
-
-        // Update legal         
         changeTurn();
-       
-      
-
-        // halfclocks, move nums, checks, mates etc
         setClocks(move);
 
- 
+        
+        // TODO: 
         // new fen
         //setFen(generateFEN());
         //allPositions.push(fen);
+    }
+
+
+    public void makeMove(String uci, Flag flag){
+        int from = 0, to = 0, i = 0;
+        for (i = 0; i < board.length; i++) {
+            if (coordinates[i].equals(uci.substring(0, 2))) from = i;
+            if (coordinates[i].equals(uci.substring(2, 4))) to = i;
+        }
+        resetEP();
+        setOld();
+        Piece moving = board[from];
+
+        Move move = new Move(from, to, flag, moving);
+        handleFlag(move, false);
+        changeTurn();
+        setClocks(move);
     }
 
 
